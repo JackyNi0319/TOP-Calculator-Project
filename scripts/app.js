@@ -12,7 +12,7 @@ window.onload = ()=> {
 }
 
 function add (opd1, opd2) {
-    return opd1 + opd2;
+    return +opd1 + +opd2;
 }
 
 function subtract (opd1, opd2) {
@@ -100,14 +100,10 @@ function displayNum(e) {
 
 function displayOps(e) {
     let len = screen.length;
-    console.log(len + "}}}");
     if (len > 0) {
         let checkOp = screen.charAt(len - 1);
-        console.log(checkOp);
-        console.log(e.target.textContent);
 
         if (e.target.textContent == '=') {
-            console.log("aayo");
             num1 = screen.substr(0, screen.indexOf(op));
             num2 = screen.substr(screen.indexOf(op) + 1);
             result = operate(num1, op, num2);
