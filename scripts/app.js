@@ -1,11 +1,13 @@
 let num1 = 0;
 let num2 = 0;
-let op = "";
+let opsHolder = "";
+let numsHolder = "";
 let screen = "";
 let result = "";
+let removeBin = "";
 const buttons = document.querySelector('.buttons');
 const display = document.querySelector('.display');
-const ops = ['+','-','*','/','='];
+const ops = ['+','-','*','/', '='];
 
 window.onload = ()=> {
     createButtons();
@@ -42,6 +44,37 @@ function operate (opd1, op, opd2) {
             break;
     }
 
+}
+
+function calculateOps() {
+    let len = opsHolder.length;
+    let currOp = "";
+    numsArr = numsHolder.split(" ");
+    let tempRes = "";
+    if (typeof(result) != 'number' && result != NaN && result != Infinity) {
+        tempRes = numsArr.shift();
+    } else {
+        tempRes = result;
+    }
+    for (let i = 0; i < len && numsArr.length !== 0; ++i) {
+        if (i == 0) {
+            num1 = tempRes;
+        } else {
+            num1 = numsArr.shift();
+        }
+        num2 = numsArr.shift();
+
+        currOp = opsHolder.charAt(i);
+        console.log("yo:" + num1 + "|" + num2 + ":" + currOp);
+        if (i == 0) {
+            tempRes = +operate(num1, currOp, num2);
+            continue;
+        }
+        tempRes += +operate(num1, currOp, num2);
+    }
+    opsHolder = "";
+    numsHolder = "";
+    return tempRes;
 }
 
 function createButtons() {
@@ -93,26 +126,35 @@ function createOps() {
 }
 
 function displayNum(e) {
-    console.log('wwwoow');
+    if (typeof(result) == 'number' && result != Infinity && result != NaN) {
+        screen = "";
+        result = "";
+    }
     screen += e.target.textContent;
+    numsHolder += e.target.textContent;
     display.innerText = screen;
 }
 
 function displayOps(e) {
     let len = screen.length;
-    if (len > 0) {
-        let checkOp = screen.charAt(len - 1);
+    let checkOp = screen.charAt(len - 1);
 
+    console.log(result + "{");
+    console.log(typeof(result) == 'number');
+    console.log(result + "SSS");
+    if (typeof(result) == 'number' && result != Infinity && result != NaN && e.target.textContent == '=' && !ops.includes(opsHolder.charAt(0))) {
+        console.log("s");
+    } else if (len > 0) {
+        console.log("ace");
         if (e.target.textContent == '=') {
-            num1 = screen.substr(0, screen.indexOf(op));
-            num2 = screen.substr(screen.indexOf(op) + 1);
-            result = operate(num1, op, num2);
+            result = calculateOps();
             screen = result + "";
             display.innerText = screen;
         }
         else if (!ops.includes(checkOp)) {
             screen += e.target.textContent;
-            op = e.target.textContent;
+            numsHolder += " ";
+            opsHolder += e.target.textContent;
             display.innerText = screen;
         }
     }
@@ -120,5 +162,7 @@ function displayOps(e) {
 
 function clearScreen() {
     screen = "";
+    result = "";
+    numsHolder = "";
     display.innerText = screen;
 }
